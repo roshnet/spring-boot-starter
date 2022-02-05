@@ -1,11 +1,8 @@
 package com.example.springboot.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.example.springboot.Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,18 +26,11 @@ public class GitHubController {
   public Object getFollowers(@PathVariable("username") String username) {
     String endpoint = String.format("https://api.github.com/users/%s", username);
     try {
-      Object response = Utils.httpGet(endpoint);
+      String response = Utils.httpGet(endpoint).toString();
+      JSONObject jsonResponse = Utils.parseJSON(response);
 
-      // [todo] Find out why this isn't working
-      // Map<String, String> map = Arrays.stream(responseString.split(","))
-      // .map(entry -> entry.split(":"))
-      // .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
-
-      String responseString = response.toString();
-      Map<String, String> mapper = new ObjectMapper().readValue(responseString, HashMap.class);
-
-      String login = mapper.get("login");
-      Object followers = mapper.get("followers");
+      String login = jsonResponse.getString("login");
+      Object followers = jsonResponse.getInt("followers");
       return String.format("%s has %s followers", login, followers);
     } catch (Exception e) {
       return e.toString();

@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.JSONObject;
+
 public class Utils {
 
   private static Object httpRequest(String type, String endpoint) {
@@ -38,6 +40,11 @@ public class Utils {
   public static Object httpPost(String endpoint) {
     Object resp = httpRequest("POST", endpoint);
     return resp;
+  }
+
+  public static JSONObject parseJSON(String httpBody) {
+    JSONObject json = new JSONObject(httpBody);
+    return json;
   }
 
   public static void log(String arg) {
